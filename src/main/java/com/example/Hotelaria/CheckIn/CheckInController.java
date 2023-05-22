@@ -14,10 +14,14 @@ import java.util.Optional;
 @RequestMapping("/api/checkIn")
 public class CheckInController {
 
-    @Autowired
     private CheckInRepository checkInRepository;
-    @Autowired
     private HospedeRepository hospedeRepository;
+
+    @Autowired
+    public CheckInController(CheckInRepository checkInRepository, HospedeRepository hospedeRepository){
+        this.checkInRepository = checkInRepository;
+        this.hospedeRepository = hospedeRepository;
+    }
 
     @GetMapping("/todos")
     public List<CheckIn> getAll() {
