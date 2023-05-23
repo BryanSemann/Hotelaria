@@ -41,6 +41,8 @@ Para realizar as requisições REST para a entidade `Hospede`, você pode utiliz
   - URL: `http://localhost:8080/api/hospedes/{id}`
   - Substitua `{id}` pelo ID do hóspede que deseja excluir.
 
+
+
 Para fazer as requisições REST para a entidade `CheckIn`, você pode seguir os seguintes exemplos usando o Postman:
 
 - Para criar um novo check-in:
