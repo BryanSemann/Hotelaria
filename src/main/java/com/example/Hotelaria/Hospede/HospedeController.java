@@ -6,17 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/hospedes")
 public class HospedeController {
 
-    private CheckInRepository checkInRepository;
-    private HospedeRepository hospedeRepository;
+    private final CheckInRepository checkInRepository;
+    private final HospedeRepository hospedeRepository;
 
     @Autowired
     public HospedeController(CheckInRepository checkInRepository, HospedeRepository hospedeRepository){
@@ -25,62 +23,59 @@ public class HospedeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Hospede>> findHospedeById(@RequestParam(name = "id", required = false)Long id,
-                                                         @RequestParam(name = "tci", required = false)Boolean temCheckin
-                                                         ) {
-        List<Hospede> hospede;
-        List<Long> ids = new ArrayList<>();
+    public List<Hospede> getAllHospedes() {
+        return hospedeRepository.findAll();
+    }
 
-
-        if ((temCheckin != null) && (temCheckin)){
-            List<Hospede> hospedesComCheckIn = new ArrayList<>();
-            List<CheckIn> checkIns = checkInRepository.findAll();
-
-            for (CheckIn checkIn : checkIns) {
-                if (checkIn.getDataSaida().toInstant().isBefore(Instant.from(LocalDate.now()))){
-                    Hospede hospede1 = checkIn.getHospede();
-                    if (hospede1 != null)
-                        hospedesComCheckIn.add(hospede1);
-                }
-            }
-            hospede = hospedesComCheckIn;
-        } else
-        if (id == null) {
-            hospede = hospedeRepository.findAll();
-        }else {
-            ids.add(id);
-            hospede = hospedeRepository.findAllById(ids);
-        }
-
-        if(hospede.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(hospede);
-        }
+    @GetMapping("/{id}")
+    public Hospede getHospedeById(@PathVariable Long id) {
+        return hospedeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Hospede não encontrado"));
     }
 
     @PostMapping
-    public Hospede newHospede(@RequestBody Hospede newHospede) {
-        return hospedeRepository.save(newHospede);
+    public Hospede createHospede(@RequestBody Hospede hospede) {
+        return hospedeRepository.save(hospede);
     }
 
-    @PutMapping
-    public Hospede replaceHospede(@RequestBody Hospede newHospede, @RequestParam("id") Long id) {
+    @PutMapping("/{id}")
+    public Hospede updateHospede(@PathVariable Long id, @RequestBody Hospede hospedeAtualizado) {
+        Hospede hospede = hospedeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Hospede não encontrado"));
 
-        return hospedeRepository.findById(id)
-                .map(hospede -> {
-                    hospede.setNome(newHospede.getNome());
-                    hospede.setDocumento(newHospede.getDocumento());
-                    return hospedeRepository.save(hospede);
-                })
-                .orElseGet(() -> {
-                    newHospede.setId(id);
-                    return hospedeRepository.save(newHospede);
-                });
+        hospede.setNome(hospedeAtualizado.getNome());
+        hospede.setDocumento(hospedeAtualizado.getDocumento());
+        hospede.setTelefone(hospedeAtualizado.getTelefone());
+
+        return hospedeRepository.save(hospede);
     }
 
-    @DeleteMapping
-    public void deleteHospede(@RequestParam("id") Long id) {
-        hospedeRepository.deleteById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHospede(@PathVariable Long id) {
+        Hospede hospede = hospedeRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Hospede não encontrado"));
+
+        hospedeRepository.delete(hospede);
+
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}/valor-total")
+    public double getValorTotalHospede(@PathVariable Long id) {
+        List<CheckIn> checkIns = checkInRepository.findByHospedeId(id);
+        return checkIns.stream()
+                .mapToDouble(CheckIn::calcularValorTotal)
+                .sum();
+    }
+
+    @GetMapping("/{id}/valor-ultima-hospedagem")
+    public double getValorUltimaHospedagem(@PathVariable Long id) {
+        List<CheckIn> checkIns = checkInRepository.findByHospedeIdOrderByDataEntradaDesc(id);
+        if (!checkIns.isEmpty()) {
+            CheckIn ultimaHospedagem = checkIns.get(0);
+            return ultimaHospedagem.calcularValorTotal();
+        }
+        return 0.0;
+    }
+
 }

@@ -1,0 +1,397 @@
+{
+	"info": {
+		"_postman_id": "513010bf-e2a0-4696-a24c-38c0925d467e",
+		"name": "Projeto Hotelaria",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19613023"
+	},
+	"item": [
+		{
+			"name": "Hospede",
+			"item": [
+				{
+					"name": "Criar um novo hóspede",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Jorge\",\r\n  \"documento\": \"112456219\",\r\n  \"telefone\": \"988534321\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todos os hóspedes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "hóspede específico pelo ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes/252",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes",
+								"252"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar um hóspede existente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Novo Nome do Hóspede\",\r\n  \"documento\": \"987654321\",\r\n  \"telefone\": \"123456789\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes/352",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes",
+								"352"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir um hóspede",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes/352",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes",
+								"352"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CheckIn",
+			"item": [
+				{
+					"name": "novo check-in",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"hospede\": {\r\n    \"id\": 404\r\n  },\r\n  \"dataEntrada\": \"2023-05-19\",\r\n  \"dataSaida\": \"2023-05-22\",\r\n  \"isAdicionalVeiculo\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/checkins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "todos os check-ins",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "check-in específico pelo ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/452",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"452"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar hóspedes cadastrados pelo nome, documento ou telefone",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/hospedes?searchTerm=Bryan",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"hospedes"
+							],
+							"query": [
+								{
+									"key": "searchTerm",
+									"value": "Bryan"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultar hóspedes que já realizaram o check-in e não estão mais no hotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/concluidos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"concluidos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultar hóspedes que ainda estão no hotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/ativos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"ativos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultar o valor total gasto por um hóspede no hotel",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes/402/valor-total",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes",
+								"402",
+								"valor-total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "consultar o valor da última hospedagem de um hóspede",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/hospedes/402/valor-ultima-hospedagem",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"hospedes",
+								"402",
+								"valor-ultima-hospedagem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "atualizar um check-in existente",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dataEntrada\": \"2023-06-01\",\r\n    \"dataSaida\": \"2023-06-05\",\r\n    \"isAdicionalVeiculo\": false,\r\n    \"hospede\": {\r\n        \"id\": 403\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/454",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"454"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "excluir um check-in",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/checkins/456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"checkins",
+								"456"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -3,8 +3,13 @@ package com.example.Hotelaria.CheckIn;
 import com.example.Hotelaria.Hospede.Hospede;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
+@SuppressWarnings("ALL")
 @Entity
 @Table(name = "checkIn")
 public class CheckIn {
@@ -12,10 +17,10 @@ public class CheckIn {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Date dataEntrada;
-    private Date dataSaida;
+    private LocalDate dataEntrada;
+    private LocalDate dataSaida;
 
-    private Boolean adicVeiculo;
+    private Boolean isAdicionalVeiculo;
     @ManyToOne
     @JoinColumn(name = "hospede_id", referencedColumnName = "id")
     private Hospede hospede;
@@ -28,19 +33,19 @@ public class CheckIn {
         this.id = id;
     }
 
-    public Date getDataEntrada() {
+    public LocalDate getDataEntrada() {
         return dataEntrada;
     }
 
-    public void setDataEntrada(Date dataEntrada) {
+    public void setDataEntrada(LocalDate dataEntrada) {
         this.dataEntrada = dataEntrada;
     }
 
-    public Date getDataSaida() {
+    public LocalDate getDataSaida() {
         return dataSaida;
     }
 
-    public void setDataSaida(Date dataSaida) {
+    public void setDataSaida(LocalDate dataSaida) {
         this.dataSaida = dataSaida;
     }
 
@@ -52,15 +57,15 @@ public class CheckIn {
         this.hospede = hospede;
     }
 
-    public Boolean getAdicVeiculo() {
-        return adicVeiculo;
+    public Boolean getIsAdicionalVeiculo() {
+        return isAdicionalVeiculo;
     }
 
-    public void setAdicVeiculo(Boolean adicVeiculo) {
-        this.adicVeiculo = adicVeiculo;
+    public void setIsAdicionalVeiculo(Boolean isAdicionalVeiculo) {
+        this.isAdicionalVeiculo = isAdicionalVeiculo;
     }
 
-    public CheckIn(Date dataEntrada, Date dataSaida, Hospede hospede) {
+    public CheckIn(LocalDate dataEntrada, LocalDate dataSaida, Hospede hospede) {
         this.dataEntrada = dataEntrada;
         this.dataSaida = dataSaida;
         this.hospede = hospede;
@@ -69,4 +74,42 @@ public class CheckIn {
     public CheckIn(){
 
     }
+
+    public Double calcularValorTotal() {
+        long dias = ChronoUnit.DAYS.between(dataEntrada, dataSaida);
+        int diasDeSemana = 0;
+        int diasDeFimDeSemana = 0;
+
+        LocalDate data = dataEntrada;
+        for (int i = 0; i < dias; i++) {
+            if (isFimDeSemana(data)) {
+                diasDeFimDeSemana++;
+            } else {
+                diasDeSemana++;
+            }
+            data = data.plusDays(1);
+        }
+
+        double valorTotal = (diasDeSemana * 120.00) + (diasDeFimDeSemana * 150.00);
+        if (isAdicionalVeiculo) {
+            int diasAdicionalVeiculo = (int) ChronoUnit.DAYS.between(dataSaida, dataEntrada);
+            double valorAdicionalVeiculo = (diasAdicionalVeiculo * 15.00);
+            if (isFimDeSemana(dataSaida)) {
+                valorAdicionalVeiculo += 20.00;
+            } else {
+                LocalDateTime horarioLimite = LocalDateTime.of(dataSaida, LocalTime.of(16, 30));
+                if (horarioLimite.isBefore(LocalDateTime.now())) {
+                    valorAdicionalVeiculo += 15.00;
+                }
+            }
+            valorTotal += valorAdicionalVeiculo;
+        }
+
+        return valorTotal;
+    }
+
+    private boolean isFimDeSemana(LocalDate data) {
+        return data.getDayOfWeek() == DayOfWeek.SATURDAY || data.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
 }

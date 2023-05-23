@@ -1,83 +1,70 @@
 package com.example.Hotelaria.CheckIn;
 
-import com.example.Hotelaria.CheckIn.CheckIn;
-import com.example.Hotelaria.Hospede.Hospede;
-import com.example.Hotelaria.Hospede.HospedeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/api/checkIn")
+@RequestMapping("/api/checkins")
 public class CheckInController {
 
-    private CheckInRepository checkInRepository;
-    private HospedeRepository hospedeRepository;
-
     @Autowired
-    public CheckInController(CheckInRepository checkInRepository, HospedeRepository hospedeRepository){
-        this.checkInRepository = checkInRepository;
-        this.hospedeRepository = hospedeRepository;
+    private CheckInRepository checkInRepository;
+
+    @GetMapping("/hospedes")
+    public List<CheckIn> getCheckInsByHospede(@RequestParam String searchTerm) {
+        return checkInRepository.findByHospedeNomeContainingOrHospedeDocumentoContainingOrHospedeTelefoneContaining(searchTerm, searchTerm, searchTerm);
     }
 
-    @GetMapping("/todos")
-    public List<CheckIn> getAll() {
-        return (List<CheckIn>) checkInRepository.findAll();
+    @GetMapping("/concluidos")
+    public List<CheckIn> getCheckInsConcluidos() {
+        LocalDate hoje = LocalDate.now();
+        return checkInRepository.findByDataSaidaBefore(hoje);
     }
 
-    @GetMapping
-    public ResponseEntity<CheckIn> findById(@RequestParam("id")Long id) {
-        Optional<CheckIn> checkIn = checkInRepository.findById(id);
-
-        if(checkIn.isPresent()) {
-            return ResponseEntity.ok().body(checkIn.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/ativos")
+    public List<CheckIn> getCheckInsAtivos() {
+        LocalDate hoje = LocalDate.now();
+        return checkInRepository.findByDataSaidaAfter(hoje);
     }
 
     @PostMapping
-    public ResponseEntity<CheckIn> createCheckIn(@RequestBody CheckIn checkIn) {
-        Long id = checkIn.getHospede().getId();
-        String nome = checkIn.getHospede().getNome();
-        String documento = checkIn.getHospede().getDocumento();
-        String telefone = checkIn.getHospede().getTelefone();
-
-        Hospede hospede = hospedeRepository.findByIdOrNomeOrDocumentoOrTelefone(id,nome,documento,telefone);
-
-        if (hospede == null) {
-            hospede = new Hospede(nome,documento,telefone);
-            hospedeRepository.save(hospede);
-        }
-
-        checkIn.setHospede(hospede);
-        checkInRepository.save(checkIn);
-
-        return ResponseEntity.ok(checkIn);
+    public CheckIn createCheckIn(@RequestBody CheckIn checkIn) {
+        return checkInRepository.save(checkIn);
     }
 
-    @PutMapping
-    public CheckIn updateCheckIn(@RequestBody CheckIn newCheckIn, @RequestParam("id") Long id) {
-
+    @GetMapping("/{id}")
+    public CheckIn getCheckInById(@PathVariable Long id) {
         return checkInRepository.findById(id)
-                .map(checkIn -> {
-                    checkIn.setHospede(newCheckIn.getHospede());
-                    checkIn.setDataEntrada(newCheckIn.getDataEntrada());
-                    checkIn.setDataSaida(newCheckIn.getDataSaida());
-                    checkIn.setAdicVeiculo(newCheckIn.getAdicVeiculo());
-                    return checkInRepository.save(checkIn);
-                })
-                .orElseGet(() -> {
-                    newCheckIn.setId(id);
-                    return checkInRepository.save(newCheckIn);
-                });
+                .orElseThrow(() -> new NoSuchElementException("Check-in não encontrado"));
     }
 
-    @DeleteMapping
-    public void deleteCheckIn(@RequestParam("id") Long id) {
-        checkInRepository.deleteById(id);
+    @PutMapping("/{id}")
+    public CheckIn updateCheckIn(@PathVariable Long id, @RequestBody CheckIn updatedCheckIn) {
+        CheckIn checkIn = checkInRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Check-in não encontrado"));
+
+        checkIn.setHospede(updatedCheckIn.getHospede());
+        checkIn.setDataEntrada(updatedCheckIn.getDataEntrada());
+        checkIn.setDataSaida(updatedCheckIn.getDataSaida());
+        checkIn.setIsAdicionalVeiculo(updatedCheckIn.getIsAdicionalVeiculo());
+
+        return checkInRepository.save(checkIn);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCheckIn(@PathVariable Long id) {
+        CheckIn checkIn = checkInRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Check-in não encontrado"));
+
+        checkInRepository.delete(checkIn);
+    }
+
+    @GetMapping
+    public List<CheckIn> getAllCheckIns() {
+        return checkInRepository.findAll();
     }
 }

@@ -47,7 +47,7 @@ public class Hospede {
         this.telefone = telefone;
     }
 
-    Hospede() {
+    public Hospede() {
     }
 
     public Hospede(String nome, String documento, String telefone) {
