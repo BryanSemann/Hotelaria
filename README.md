@@ -1,5 +1,46 @@
 # Hotelaria
 
+Para realizar as requisições REST para a entidade `Hospede`, você pode utilizar o Postman, seguindo os exemplos abaixo:
+
+- Criar um novo hóspede:
+  - Método: POST
+  - URL: `http://localhost:8080/api/hospedes`
+  - Corpo (formato JSON):
+  ```json
+  {
+    "nome": "Nome do Hóspede",
+    "documento": "123456789",
+    "telefone": "987654321"
+  }
+  ```
+
+- Obter todos os hóspedes:
+  - Método: GET
+  - URL: `http://localhost:8080/api/hospedes`
+
+- Obter um hóspede específico pelo ID:
+  - Método: GET
+  - URL: `http://localhost:8080/api/hospedes/{id}`
+  - Substitua `{id}` pelo ID do hóspede desejado.
+
+- Atualizar um hóspede existente:
+  - Método: PUT
+  - URL: `http://localhost:8080/api/hospedes/{id}`
+  - Substitua `{id}` pelo ID do hóspede que deseja atualizar.
+  - Corpo (formato JSON):
+  ```json
+  {
+    "nome": "Novo Nome do Hóspede",
+    "documento": "987654321",
+    "telefone": "123456789"
+  }
+  ```
+
+- Excluir um hóspede:
+  - Método: DELETE
+  - URL: `http://localhost:8080/api/hospedes/{id}`
+  - Substitua `{id}` pelo ID do hóspede que deseja excluir.
+
 Para fazer as requisições REST para a entidade `CheckIn`, você pode seguir os seguintes exemplos usando o Postman:
 
 - Para criar um novo check-in:
@@ -70,44 +111,3 @@ Para fazer as requisições REST para a entidade `CheckIn`, você pode seguir os
   - URL: `http://localhost:8080/api/hospedes/{id}/valor-ultima-hospedagem`
   - Substitua `{id}` pelo ID do hóspede desejado.
 
-
-Para realizar as requisições REST para a entidade `Hospede`, você pode utilizar o Postman, seguindo os exemplos abaixo:
-
-- Criar um novo hóspede:
-  - Método: POST
-  - URL: `http://localhost:8080/api/hospedes`
-  - Corpo (formato JSON):
-  ```json
-  {
-    "nome": "Nome do Hóspede",
-    "documento": "123456789",
-    "telefone": "987654321"
-  }
-  ```
-
-- Obter todos os hóspedes:
-  - Método: GET
-  - URL: `http://localhost:8080/api/hospedes`
-
-- Obter um hóspede específico pelo ID:
-  - Método: GET
-  - URL: `http://localhost:8080/api/hospedes/{id}`
-  - Substitua `{id}` pelo ID do hóspede desejado.
-
-- Atualizar um hóspede existente:
-  - Método: PUT
-  - URL: `http://localhost:8080/api/hospedes/{id}`
-  - Substitua `{id}` pelo ID do hóspede que deseja atualizar.
-  - Corpo (formato JSON):
-  ```json
-  {
-    "nome": "Novo Nome do Hóspede",
-    "documento": "987654321",
-    "telefone": "123456789"
-  }
-  ```
-
-- Excluir um hóspede:
-  - Método: DELETE
-  - URL: `http://localhost:8080/api/hospedes/{id}`
-  - Substitua `{id}` pelo ID do hóspede que deseja excluir.
