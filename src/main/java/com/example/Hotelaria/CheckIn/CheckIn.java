@@ -20,7 +20,7 @@ public class CheckIn {
     private LocalDate dataEntrada;
     private LocalDate dataSaida;
 
-    private Boolean isAdicionalVeiculo;
+    private Boolean isAdicionalVeiculo = false;
     @ManyToOne
     @JoinColumn(name = "hospede_id", referencedColumnName = "id")
     private Hospede hospede;
